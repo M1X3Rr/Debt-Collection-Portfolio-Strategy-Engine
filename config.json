@@ -1,0 +1,153 @@
+{
+  "data": {
+    "input_path": "data/sample_portfolio.xlsx",
+    "train_path": "data/train/train.xlsx",
+    "valid_path": "data/valid/valid.xlsx",
+    "test_path": "data/test/test.xlsx",
+    "artifacts_dir": "models"
+  },
+  "columns": {
+    "categorical_features": ["Client", "Location", "Product"],
+    "numerical_features": ["Case Value", "DPD", "Debtor Age"],
+    "action_features": ["Calls", "Letters", "SMS", "Emails"],
+    "weekly_action_features": ["Calls_per_week", "Letters_per_week", "SMS_per_week", "Emails_per_week"],
+    "debtor_name_column": "Name",
+    "product_missing_placeholder": "Unknown_Product",
+    "date_features": {
+      "import_date": "Import date",
+      "end_date": "Date End"
+    },
+    "target_column": "Paid Value",
+    "exclude_features": ["#", "Case ID", "Payment date", "Import date", "Import Name", "Date End"]
+  },
+  "model": {
+    "hidden_layers": [128, 64, 32],
+    "dropout": 0.4,
+    "embedding_dims": {
+      "Client": 20,
+      "Location": 10,
+      "Product": 10
+    }
+  },
+  "training": {
+    "batch_size": 1024,
+    "epochs": 100,
+    "learning_rate": 0.0005,
+    "weight_decay": 1e-3,
+    "val_split": 0.15,
+    "test_split": 0.30,
+    "random_state": 42,
+    "split_by_import": true,
+    "batch_by_import": true,
+    "early_stopping": {
+      "enabled": true,
+      "patience": 10,
+      "min_delta": 1e-4
+    }
+  },
+  "data_validation": {
+    "min_paid_value": 0.01,
+    "exclude_zero_paid": false,
+    "exclude_negative_paid": true,
+    "exclude_exceeds_case_value": true,
+    "case_value_tolerance": 0.01,
+    "exclude_zero_or_negative_case_value": true,
+    "exclude_all_actions_zero": false
+  },
+  "actions_grid": {
+    "Calls": [0, 10, 20, 30, 40, 50],
+    "Letters": [0, 1, 2, 3, 4, 5],
+    "SMS": [0, 5, 10, 15, 20, 25, 30],
+    "Emails": [0, 5, 10, 15, 20, 25, 30]
+  },
+  "action_costs": {
+    "Calls": 0.2,
+    "Letters": 1.22,
+    "SMS": 0.03,
+    "Emails": 0.0
+  },
+  "weekly_action_caps": {
+    "Calls": 3,
+    "Letters": 1,
+    "SMS": 5,
+    "Emails": 3
+  },
+  "prediction_sanity": {
+    "enable_portfolio_soft_check": true,
+    "portfolio_ratio_warn": 2.0,
+    "portfolio_ratio_min_warn": 1.0
+  },
+  "prediction_cap": {
+    "enabled": true,
+    "per_case_max_paid_to_case_ratio": 0.8,
+    "also_cap_at_case_value": true
+  },
+  "portfolio_lengths": {
+    "no_limit_months": 60,
+    "default_months": 12,
+    "by_client": {
+      "Client_A Finance": null,
+      "Client_B Bank": null,
+      "Client_B Bank - Secondary": null,
+      "Client_C Credit": null,
+      "Client_A - Early": 1,
+      "Client_A - Standard": 36,
+      "Client_D Retail": 6,
+      "Client_E Bank": null,
+      "Client_D - Mortgage": 6,
+      "Client_F Digital": null,
+      "Client_G Collections": null,
+      "DirectMarketing": null,
+      "Utility Corp East": 4,
+      "Utility Corp West": 4,
+      "Utility Distribution": 4,
+      "ISP Provider A": 4,
+      "Telco Mobile": 5,
+      "Telco Fixed": 6,
+      "Telco Early": {"days": 8},
+      "Telco Primary": 2,
+      "ISP Provider B": 3,
+      "Telco Secondary": 6,
+      "Telco Secondary - Extended": 12
+    }
+  },
+  "target_transform": {
+    "mode": "paid_value",
+    "max_training_ratio": 0.8
+  },
+  "gbm": {
+    "paid_blend": {
+      "case_value_column": "Case Value",
+      "high_value_percentile": 90,
+      "relative_error_tolerance_pct": 20,
+      "evaluation_quantiles": [0.5, 0.75, 0.9, 0.99]
+    },
+    "behavior_kmeans": {
+      "n_clusters": 8,
+      "random_state": 42
+    },
+    "catboost_paid": {
+      "loss_function": "Quantile:alpha=0.5",
+      "iterations": 2000,
+      "early_stopping_rounds": 50,
+      "verbose": false
+    },
+    "lightgbm_paid": {
+      "objective": "regression",
+      "metric": "rmse",
+      "iterations": 2000,
+      "early_stopping_rounds": 50,
+      "learning_rate": 0.05,
+      "num_leaves": 63,
+      "feature_fraction": 0.9,
+      "bagging_fraction": 0.8,
+      "bagging_freq": 1
+    },
+    "action_gbm": {
+      "backend": "catboost_multi",
+      "loss_function": "MultiRMSE",
+      "iterations": 2000,
+      "early_stopping_rounds": 50
+    }
+  }
+}

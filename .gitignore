@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+
+# IDE / OS
+.cursor/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# App runtime artifacts (train locally; do not commit proprietary models)
+models/*.pkl
+models/*.cbm
+models/*.txt
+models/*.pth
+models/*.json
+!models/.gitkeep
+
+# Data — synthetic samples are committed; real portfolios must stay local
+data/predictions/
+data/plots/
+data/old logs/
+data/*.xlsx
+!data/train/train.xlsx
+!data/valid/valid.xlsx
+!data/test/test.xlsx
+!data/sample_portfolio.xlsx
+
+# Training logs
+catboost_info/
+
+# Local credentials (copy from users.json.example)
+users.json
+
+# Exports
+predictions_output_*.xlsx
+
+# Benchmark run outputs
+benchmark/outputs/

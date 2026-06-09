@@ -1,0 +1,3 @@
+# Install in addition to the main project: pip install -r benchmark/requirements.txt
+catboost>=1.2.0
+lightgbm>=4.0.0

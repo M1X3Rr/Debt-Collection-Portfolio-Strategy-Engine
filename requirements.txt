@@ -1,0 +1,22 @@
+# Core runtime (GUI, GBM inference, data pipeline)
+numpy>=1.23.0
+pandas>=1.5.0
+scikit-learn>=1.2.0
+catboost>=1.2.0
+lightgbm>=4.0.0
+joblib>=1.2.0
+matplotlib>=3.7.0
+customtkinter>=5.2.0
+tkinterweb>=3.24.3
+openpyxl>=3.1.0
+Pillow>=10.0.0
+markdown2>=2.4.0
+
+# Testing / evaluation plots (test.py)
+seaborn>=0.12.0
+
+# Optional: legacy neural-network training & benchmarks in train.py / benchmark/
+# Not required for default GBM training or strategy simulation.
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
